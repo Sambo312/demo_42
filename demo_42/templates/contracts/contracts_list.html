@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for contr in contracts %}
+<ul>
+  <li>
+    Куратор: {{ contr.curator.get_full_name }}
+  </li>
+  <li>
+    Название: {{ contr.name }}
+  </li>
+  <li>
+    Номер: {{ contr.number }}
+  </li>
+  <li>
+    Дата начала: {{ contr.start_date|date:"d E Y" }}
+  </li>
+  <li>
+    Дата окончания: {{ contr.end_date|date:"d E Y" }}
+  </li>
+  <li>
+    Контрагент: {{ contr.partner.title }}
+  </li>
+</ul>
+{% if not forloop.last %}<hr>{% endif %}
+{% endfor %} 
+{% endblock %}
