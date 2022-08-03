@@ -1,0 +1,31 @@
+root
+root@localhost.ru
+123123
+
+	user1 user1@localhost.ru 123123123!a admin_group
+	user2 user2@localhost.ru 123123123!a all_perm_contract
+	user3 user3@localhost.ru 123123123!a del_contract
+	user4 user4@localhost.ru 123123123!a edit_contract
+	user5 user5@localhost.ru 123123123!a list_contract
+7	user6 user6@localhost.ru 123123123!a new_contract
+
+groups
+all_permissions
+
+list_contracts
+detail_contract
+
+edit_contract
+
+new_contract
+
+del_contract
+
+
+договор 1 №1 01.01.2022 01.01.2023 7 1
+договор 2 №2 01.01.2022 01.01.2023 7 2
+договор 3 №3 01.01.2022 01.01.2023 7 3
+договор 4 №4 01.01.2022 01.01.2023 7 4
+договор 5 №5 01.01.2022 01.01.2023 7 5
+
+    Контрагент: {{ contr.partner.title }}
