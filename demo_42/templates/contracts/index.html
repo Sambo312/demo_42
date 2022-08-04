@@ -13,8 +13,11 @@
           Список доступных договоров: 
           <a href="{% url 'contracts:contract_list' %}">Просмотреть</a>
         </div>
+        <div class="card-body">
+          Тест <b>JsonResponse</b> - вывод списка договоров куратора(в тестовой БД Договора есть только у пользователя с id=7), вывод дублируется в терминал: 
+          <a href="{% url 'contracts:list_curator_contracts' 7%}">Затестить</a>
+        </div>
       </div>
     </div>
   </div>
-  
 {% endblock %}

@@ -7,7 +7,7 @@
   <div class="col-md-8 p-5">
     <div class="card">
       <div class="card-header">
-        Информация о договоре номер {{ contract.number }}
+        Информация о договоре номер {{ contract.number }} <a href="{% url 'contracts:contract_edit' contract.id %}"><b>(Редактировать)</b></a>
       </div>
       <div class="card-body">   
         <ul>
@@ -35,6 +35,10 @@
           <li>
             <b>Договор:</b>
             <a href="{% url 'contracts:get_contract_file' contract.id %}">Выгрузить</a>
+          </li>
+          <li>
+            <b>Удаление договора из системы:</b>
+            <a href="{% url 'contracts:contract_del' contract.id %}">Удалить</a>
           </li>
         </ul>
         {% if not forloop.last %}<hr>{% endif %}

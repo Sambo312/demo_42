@@ -13,10 +13,10 @@ from .models import Contract, Partner
 from .utils import DateTimeEncoder
 
 
+title = 'Система оборота договоров'
 
 def index(request):
     template = 'contracts/index.html'
-    title = 'Система оборота договоров'
     text = 'Главная страница системы'
     context = {
         'title': title,
@@ -29,7 +29,6 @@ def index(request):
 def contracts_list(request):
     contracts = Contract.objects.all()
     template = 'contracts/contracts_list.html'
-    title = 'Система оборота договоров'
     text = 'Список доступных договоров'
     context = {
         'title': title,
@@ -43,7 +42,6 @@ def contracts_list(request):
 def contract_detail(request, contract_id):
     template = 'contracts/contract_detail.html'
     contract = get_object_or_404(Contract, pk=contract_id)
-    title = 'Система оборота договоров'
     context = {
         'title': title,
         'contract': contract,
@@ -52,16 +50,39 @@ def contract_detail(request, contract_id):
 
 @permission_required('contracts.change_contract', raise_exception=True)
 def contract_edit(request, contract_id):
-    return HttpResponse('Редактирование договора')
+    template = 'contracts/contract_any.html'
+    annotation = 'Форма редактирования карточки договора'
+    text = 'Здесь должна быть форма редактирования карточки договора'
+    context = {
+        'title': title,
+        'annotation' : annotation,
+        'text': text,
+    }
+    return render(request, template, context)
 
 @permission_required('contracts.add_contract', raise_exception=True)
 def contract_new(request):
-    template = 'contracts/contract_create.html'
-    return render(request, template)
+    template = 'contracts/contract_any.html'
+    annotation = 'Форма заведения карточки договора'
+    text = 'Здесь должна быть форма создания карточки нового договора'
+    context = {
+        'title': title,
+        'annotation' : annotation,
+        'text': text,
+    }
+    return render(request, template, context)
 
 @permission_required('contracts.delete_contract', raise_exception=True)
 def contract_del(request, contract_id):
-    return HttpResponse('Удаление договора')
+    template = 'contracts/contract_any.html'
+    annotation = 'Удалять договора из системы не хорошо'
+    text = 'Поэтому мы ничего не удаляем'
+    context = {
+        'title': title,
+        'annotation' : annotation,
+        'text': text,
+    }
+    return render(request, template, context)
 
 @permission_required('contracts.view_contract', raise_exception=True)
 def get_contract_file (request, contract_id):
