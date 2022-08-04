@@ -1,14 +1,18 @@
 # contracts/urls.py
 from django.urls import path
+from django.contrib.auth.decorators import login_required
+
 from . import views
 
 app_name = 'contracts'
 
 urlpatterns = [
-    path('', views.index),
-    path('contracts/', views.contracts_list, name='ice_cream_list'),
-    path('contracts/<int:contract_id>/', views.contract_detail, name='contract_detail'),
-    path('contracts/<int:contract_id>/edit/', views.contract_edit, name='contract_edit'),
-    path('create/', views.contract_new, name='contract_new'),
-    path('contracts/<int:pk>/del/', views.contract_del, name='contract_del'),
+    path('', login_required(views.index), name='index'),
+    path('contracts/', login_required(views.contracts_list), name='contract_list'),
+    path('contracts/<int:contract_id>/', login_required(views.contract_detail), name='contract_detail'),
+    path('contracts/<int:contract_id>/edit/', login_required(views.contract_edit), name='contract_edit'),
+    path('create/', login_required(views.contract_new), name='contract_new'),
+    path('contracts/<int:contract_id>/del/', login_required(views.contract_del), name='contract_del'),
+    path('contracts/<int:contract_id>/get/', login_required(views.get_contract_file), name='get_contract_file'),
+    path('contracts/get_list/<int:user_id>/', login_required(views.list_curator_contracts), name='list_curator_contracts'),
 ]

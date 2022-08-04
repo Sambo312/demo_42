@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Войти{% endblock %}
+{% block content %}
+
+  <div class="row justify-content-center">
+    <div class="col-md-8 p-5">
+      <div class="card">
+        <div class="card-header">
+          Войти на сайт
+        </div>
+        <div class="card-body">
+          <form class="form-signin" method="post" action="">
+            {% if form.errors %}
+              <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">×</button>Неверное имя пользователя или пароль.
+              </div>
+            {% endif %}
+
+            {% csrf_token %}
+            <input  id="id_username" type="text" name="username" class="input-block-level" placeholder="Имя">
+            <input  type="password" name="password" id="id_password"  class="input-block-level" placeholder="Пароль">
+            <button class="btn btn-large btn-primary" type="submit">Войти</button>
+          </form>
+        </div> <!-- card body -->
+      </div> <!-- card -->
+    </div> <!-- col -->
+</div> <!-- row -->
+{% endblock %}

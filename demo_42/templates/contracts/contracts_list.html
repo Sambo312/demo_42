@@ -1,26 +1,38 @@
 {% extends 'base.html' %}
+{% block title %}
+  {{ title }}
+{% endblock %}
 {% block content %}
-{% for contr in contracts %}
-<ul>
-  <li>
-    Куратор: {{ contr.curator.get_full_name }}
-  </li>
-  <li>
-    Название: {{ contr.name }}
-  </li>
-  <li>
-    Номер: {{ contr.number }}
-  </li>
-  <li>
-    Дата начала: {{ contr.start_date|date:"d E Y" }}
-  </li>
-  <li>
-    Дата окончания: {{ contr.end_date|date:"d E Y" }}
-  </li>
-  <li>
-    Контрагент: {{ contr.partner.title }}
-  </li>
-</ul>
-{% if not forloop.last %}<hr>{% endif %}
-{% endfor %} 
+<div class="row justify-content-center">
+  <div class="col-md-8 p-5">
+    <div class="card">
+      <div class="card-header">
+        {{ text|safe }}
+      </div>
+      <div class="card-body">
+        {% for contr in contracts %}
+        <ul>
+          <li>
+            <b>Номер:</b>
+            <a href="{% url 'contracts:contract_detail' contr.id %}">{{ contr.number }}</a>
+          </li>
+          <li>
+            <b>Название:</b> {{ contr.name }}
+          </li>
+          <li>
+            <b>Дата начала:</b> {{ contr.start_date|date:"d E Y" }}
+          </li>
+          <li>
+            <b>Дата окончания:</b> {{ contr.end_date|date:"d E Y" }}
+          </li>
+          <li>
+            <b>Контрагент:</b> {{ contr.partner.title }}
+          </li>
+        </ul>
+        {% if not forloop.last %}<hr>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

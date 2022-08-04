@@ -1,0 +1,49 @@
+{% load static %}
+<header>
+  <nav class="navbar navbar-light" style="background-color: rgb(110, 153, 238)">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'contracts:index' %}">
+        <img src="{% static 'img/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+        <span style="color:red">Система</span> ведения договоров</a>
+      </a>
+      <ul class="nav nav-pills">
+        {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link
+              {% if request.resolver_match.view_name  == 'posts:post_create' %}
+                active
+              {% endif %}"
+              href="{% url 'contracts:contract_new' %}"
+            >
+            <span style="color:rgb(12, 12, 12)">Новый договор</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link 
+            {% if request.resolver_match.view_name  == 'users:logout' %}
+              active
+            {% endif %}"
+            href="{% url 'users:logout' %}"
+          >
+          <span style="color:rgb(12, 12, 12)">Выйти</span>
+          </a>
+          </li>
+          <li>
+            <span style="color:rgb(12, 12, 12)">Пользователь: {{ user.get_full_name }}</span>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link 
+            {% if request.resolver_match.view_name  == 'users:login' %}
+              active
+            {% endif %}"
+            href="{% url 'users:login' %}"
+          >
+          <span style="color:rgb(12, 12, 12)">Войти</span>
+          </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+</header>

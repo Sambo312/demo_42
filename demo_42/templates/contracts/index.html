@@ -1,8 +1,20 @@
 {% extends 'base.html' %}
-
+{% block title %}
+  {{ title }}
+{% endblock %}
 {% block content %}
-  <head>
-    <title>{{ title }}</title>
-  </head>
-  {{ text|safe }}
+  <div class="row justify-content-center">
+    <div class="col-md-8 p-5">
+      <div class="card">
+        <div class="card-header">
+          {{ text|safe }}
+        </div>
+        <div class="card-body">
+          Список доступных договоров: 
+          <a href="{% url 'contracts:contract_list' %}">Просмотреть</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 {% endblock %}

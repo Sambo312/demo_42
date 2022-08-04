@@ -1,26 +1,45 @@
 {% extends 'base.html' %}
+{% block title %}
+  {{ title }}
+{% endblock %}
 {% block content %}
-
-<ul>
-  <li>
-    Куратор: {{ contract.curator.get_full_name }}
-  </li>
-  <li>
-    Название: {{ contract.name }}
-  </li>
-  <li>
-    Номер: {{ contract.number }}
-  </li>
-  <li>
-    Дата начала: {{ contract.start_date|date:"d E Y" }}
-  </li>
-  <li>
-    Дата окончания: {{ contract.end_date|date:"d E Y" }}
-  </li>
-  <li>
-    Контрагент: {{ contract.partner.title }}
-  </li>
-</ul>
-{% if not forloop.last %}<hr>{% endif %}
-
+<div class="row justify-content-center">
+  <div class="col-md-8 p-5">
+    <div class="card">
+      <div class="card-header">
+        Информация о договоре номер {{ contract.number }}
+      </div>
+      <div class="card-body">   
+        <ul>
+          <li>
+            <b>Куратор:</b> {{ contract.curator.get_full_name }}
+          </li>
+          <li>
+            <b>Компания куратора:</b> {{ contract.curator.userprofile.company }}
+          </li>
+          <li>
+            <b>Должность куратора:</b> {{ contract.curator.userprofile.position }}
+          </li>
+          <li>
+            <b>Название:</b> {{ contract.name }}
+          </li>
+          <li>
+            <b>Дата начала:</b> {{ contract.start_date|date:"d E Y" }}
+          </li>
+          <li>
+            <b>Дата окончания:</b> {{ contract.end_date|date:"d E Y" }}
+          </li>
+          <li>
+            <b>Контрагент:</b> {{ contract.partner.title }}
+          </li>
+          <li>
+            <b>Договор:</b>
+            <a href="{% url 'contracts:get_contract_file' contract.id %}">Выгрузить</a>
+          </li>
+        </ul>
+        {% if not forloop.last %}<hr>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

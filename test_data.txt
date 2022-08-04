@@ -1,0 +1,32 @@
+1	root root@localhost.ru 123123 superuser
+2	user1 user1@localhost.ru 123123123!a admin_group	видит и может все (не реализовано добавление/редактирование/удаление пользователей/групп/контрагентов)
+3	user2 user2@localhost.ru 123123123!a all_perm_contract  видит и может все исключая действия с пользователями/группами
+4	user3 user3@localhost.ru 123123123!a del_contract	видит и может все с контрактами, может видеть контрагентов
+5	user4 user4@localhost.ru 123123123!a edit_contract	видит и может изменить контракт, может видеть контрагентов
+6	user5 user5@localhost.ru 123123123!a list_contract	видит контракт, может видеть контрагентов
+7	user6 user6@localhost.ru 123123123!a new_contract	видит и может добавить/изменить контракт, может видеть контрагентов
+8	user7 user7@localhost.ru 123123123!a 			ничего не может
+
+1	Контрагент 1	contr_1	Контрагент №1
+2	Контрагент 2	contr_2	Контрагент №2
+3	Контрагент 3	contr_3	Контрагент №3
+4	Контрагент 4	contr_4	Контрагент №4
+5	Контрагент 5	contr_5	Контрагент №5
+
+
+1	договор 1 №1 01.01.2022 01.01.2023 7 1
+2	договор 2 №2 01.01.2022 01.01.2023 7 2
+3	договор 3 №3 01.01.2022 01.01.2023 7 3
+4	договор 4 №4 01.01.2022 01.01.2023 7 4
+5	договор 5 №5 01.01.2022 01.01.2023 7 5
+
+права
+contracts.view_contract
+contracts.add_contract
+contracts.delete_contract
+contracts.change_contract
+
+contracts.view_partner
+contracts.add_partner
+contracts.delete_partner
+contracts.change_partner
