@@ -24,7 +24,7 @@ class Contract(models.Model):
     )
     start_date = models.DateField(
         'Дата начала',
-        auto_now_add=True
+        help_text='Введите дату начала договра'
     )
     end_date = models.DateField(
         'Дата окончания',
@@ -40,7 +40,7 @@ class Contract(models.Model):
     partner = models.ForeignKey(
         Partner,
         on_delete=models.CASCADE,
-        related_name='contracts',
+        related_name='partner',
         blank=False,
         null=False,
         verbose_name='Контрагент',
@@ -57,3 +57,24 @@ class Contract(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class UserContraсts(models.Model):
+    
+    collaborator = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='Collaborator',
+        verbose_name='Пользователь договора'
+    )
+    deal = models.ForeignKey(
+        Contract,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='Contract',
+        verbose_name='Договор'
+    )
+
+    def __str__(self) -> str:
+        return 'Договоры пользователей'

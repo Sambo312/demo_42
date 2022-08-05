@@ -6,11 +6,12 @@ import xlsxwriter
 
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 
 from .models import Contract, Partner
 from .utils import DateTimeEncoder
+from .forms import UserContractsForm, PartnerForm, ContractForm
 
 
 title = 'Система оборота договоров'
@@ -134,3 +135,21 @@ def list_curator_contracts(request, user_id):
 
     return JsonResponse(
         list_contracts, safe=False, json_dumps_params={'ensure_ascii': False})
+
+def contract_users(request, contract_id):
+    template = 'contracts/contract_users.html'
+    form = UserContractsForm(request.POST or None,)
+    context = {
+            'title': title,
+            'form': form,
+        }
+
+    if request.method == 'POST':
+
+        if form.is_valid():
+            contract = form.save(commit=False)
+            contract.id = contract_id
+            contract.save()
+            return redirect('contracts:contract_detail', pk=contract_id)
+
+    return render(request, template, context)

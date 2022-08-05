@@ -40,6 +40,10 @@
             <b>Удаление договора из системы:</b>
             <a href="{% url 'contracts:contract_del' contract.id %}">Удалить</a>
           </li>
+          <li>
+            <b>Добавление работников к договору:</b>
+            <a href="{% url 'contracts:contract_users' contract.id %}">Добавить</a>
+          </li>
         </ul>
         {% if not forloop.last %}<hr>{% endif %}
       </div>
