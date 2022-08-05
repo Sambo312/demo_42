@@ -130,12 +130,7 @@ def get_contract_file (request, contract_id):
 @permission_required('contracts.view_contract', raise_exception=True)
 def list_curator_contracts(request, user_id):
     list_contracts = list(Contract.objects.filter(curator_id=user_id).values(
-        "id", "name", "number", "start_date", "end_date", "partner", "partner_id", "curator", "curator_id"))
-
-    list_contracts = json.dumps(
-        list_contracts, indent=4, ensure_ascii=False, cls=DateTimeEncoder)
-
-    print (list_contracts)
+        "id", "name", "number", "start_date", "end_date"))
 
     return JsonResponse(
         list_contracts, safe=False, json_dumps_params={'ensure_ascii': False})
