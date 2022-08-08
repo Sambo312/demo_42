@@ -38,8 +38,7 @@ class UserContractsForm(forms.ModelForm):
     class Meta: 
         model = UserContraсts
         fields = (
-            'collaborator', 'deal')
+            'collaborator',)
         labels = {
             'collaborator': 'Работник',
-            'deal': 'Договор',
         }

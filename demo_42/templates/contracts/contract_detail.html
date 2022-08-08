@@ -36,15 +36,22 @@
             <b>Договор:</b>
             <a href="{% url 'contracts:get_contract_file' contract.id %}">Выгрузить</a>
           </li>
+          {% if user_group == 'admin_group' or user_group == 'del_contract' %}
           <li>
             <b>Удаление договора из системы:</b>
             <a href="{% url 'contracts:contract_del' contract.id %}">Удалить</a>
           </li>
+          {% endif %}
+          {% if user_group == 'admin_group' %}
           <li>
             <b>Добавление работников к договору:</b>
             <a href="{% url 'contracts:contract_users' contract.id %}">Добавить</a>
           </li>
+          {% endif %}
         </ul>
+          Тест 
+          <a href="{% url 'contracts:list_contract_users' contract.id%}">JsonResponse</a>
+           - вывод списка пользователей имеющих право доступа к договору
         {% if not forloop.last %}<hr>{% endif %}
       </div>
     </div>

@@ -15,5 +15,6 @@ urlpatterns = [
     path('contracts/<int:contract_id>/del/', login_required(views.contract_del), name='contract_del'),
     path('contracts/<int:contract_id>/get/', login_required(views.get_contract_file), name='get_contract_file'),
     path('contracts/get_list/<int:user_id>/', login_required(views.list_curator_contracts), name='list_curator_contracts'),
+    path('contracts/get_users/<int:contract_id>/', login_required(views.list_contract_users), name='list_contract_users'),
     path('contracts/<int:contract_id>/add_users/', login_required(views.contract_users), name='contract_users'),
 ]

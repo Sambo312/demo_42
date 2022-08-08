@@ -15,9 +15,10 @@
         </div>
         <div class="card-body">
           Тест 
-          <a href="{% url 'contracts:list_curator_contracts' 7%}">JsonResponse</a>
-           - вывод списка договоров куратора(в тестовой БД Договора есть только у пользователя с id=7)
+          <a href="{% url 'contracts:list_curator_contracts' user.id%}">JsonResponse</a>
+           - вывод списка договоров куратора
         </div>
+        
       </div>
     </div>
   </div>
