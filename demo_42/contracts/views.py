@@ -1,22 +1,20 @@
 
 import threading
-import json
 
 import xlsxwriter
 
-from django.core import serializers
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 
 from .models import Contract, Partner, UserContraсts, User
-from .utils import DateTimeEncoder
-from .forms import UserContractsForm, PartnerForm, ContractForm
+from .forms import UserContractsForm
 
 
 title = 'Система оборота договоров'
 
 def index(request):
+
     template = 'contracts/index.html'
     text = 'Главная страница системы'
     context = {
@@ -29,6 +27,7 @@ def index(request):
 @permission_required('contracts.view_contract', raise_exception=True)
 def contracts_list(request):
     """Список договоров"""
+
     template = 'contracts/contracts_list.html'
     text = 'Список доступных договоров'
     user_group = request.user.groups.values_list('name', flat=True).first()
@@ -60,6 +59,7 @@ def contracts_list(request):
 @permission_required('contracts.view_contract', raise_exception=True)
 def contract_detail(request, contract_id):
     """Карточка договора"""
+
     template = 'contracts/contract_detail.html'
     contract_id_lst = []
     user_id = request.user.id
@@ -91,6 +91,7 @@ def contract_detail(request, contract_id):
 @permission_required('contracts.change_contract', raise_exception=True)
 def contract_edit(request, contract_id):
     """Редактирование не подвезли пока"""
+
     template = 'contracts/contract_any.html'
     annotation = 'Форма редактирования карточки договора'
     text = 'Здесь должна быть форма редактирования карточки договора'
@@ -103,6 +104,8 @@ def contract_edit(request, contract_id):
 
 @permission_required('contracts.add_contract', raise_exception=True)
 def contract_new(request):
+    "Заведение договора в систему"
+
     template = 'contracts/contract_any.html'
     annotation = 'Форма заведения карточки договора'
     text = 'Здесь должна быть форма создания карточки нового договора'
@@ -116,6 +119,7 @@ def contract_new(request):
 @permission_required('contracts.delete_contract', raise_exception=True)
 def contract_del(request, contract_id):
     """Удаление не подвезли пока"""
+
     template = 'contracts/contract_any.html'
     annotation = 'Удалять договора из системы не хорошо'
     text = 'Поэтому мы ничего не удаляем'
@@ -126,6 +130,7 @@ def contract_del(request, contract_id):
     }
     return render(request, template, context)
 
+# threading/files
 @permission_required('contracts.view_contract', raise_exception=True)
 def get_contract_file (request, contract_id):
     """Генератор xlsx файла из данных БД"""
@@ -169,14 +174,90 @@ def get_contract_file (request, contract_id):
 
     return response
 
+
+# JsonAPI
+@permission_required('contracts.view_contract', raise_exception=True)
+def list_curator_contracts(request, user_id):
+    """Показывает список договоров у куратора"""
+
+    list_contracts = list(Contract.objects.filter(curator_id=user_id).values(
+        "id", "name", "number", "start_date", "end_date"))
+
+    return JsonResponse(
+        list_contracts, safe=False, json_dumps_params={'ensure_ascii': False})
+
+
+@permission_required('contracts.view_contract', raise_exception=True)
+def list_contract_users(request, contract_id):
+    """Показывает список пользователей имеющих доступ к договору"""
+
+    contract_user_id_lst, list_users = [], []
+    user_id = request.user.id
+    user_group = request.user.groups.values_list('name', flat=True).first()
+    contracts_lst = list(UserContraсts.objects.filter(deal_id=contract_id).values(
+        "collaborator_id",))
+    for i in contracts_lst:
+        contract_user_id_lst.append(i['collaborator_id'])
+
+    contract_users = User.objects.filter(id__in=contract_user_id_lst)
+    
+    if user_group == 'admin_group' or user_id in contract_user_id_lst:
+        for i in contract_users:
+            context = {
+            'name': str(i),
+            'company' : str(get_object_or_404(
+                Partner, pk=i.userprofile.company_id)),
+            'position': str(i.userprofile.position),
+            }
+            list_users.append(context)
+        return JsonResponse(
+            list_users, safe=False, json_dumps_params={'ensure_ascii': False})
+    
+    return JsonResponse(['error: acces denied'], safe=False, json_dumps_params={
+        'ensure_ascii': False})
+
+@permission_required('contracts.view_contract', raise_exception=True)
+def list_user_contracts(request, user_id):
+    """Показывает список договоров доступных пользователю"""
+
+    contracts_user_id_lst, list_contracts = [], []
+    user_ = request.user.id
+    user_group = request.user.groups.values_list('name', flat=True).first()
+    contracts_lst = list(UserContraсts.objects.filter(
+        collaborator_id=user_id).values("deal_id",))
+    for i in contracts_lst:
+        contracts_user_id_lst.append(i['deal_id'])
+            
+    user_contracts = Contract.objects.filter(id__in=contracts_user_id_lst)
+    
+    if user_group == 'admin_group' or (user_id == user_ and len(
+        contracts_user_id_lst) > 0):
+        for i in user_contracts:
+            context = {
+            'name': str(i),
+            'company' : str(get_object_or_404(Partner, pk=i.partner_id)),
+            'start_date': str(i.start_date),
+            'end_date': str(i.end_date),
+            }
+            list_contracts.append(context)
+        return JsonResponse(
+            list_contracts, safe=False, json_dumps_params={'ensure_ascii': False})
+    
+    return JsonResponse(['error: acces denied'], safe=False, json_dumps_params={
+        'ensure_ascii': False})
+
+
+# add/del user permissions
 @permission_required('contracts.add_usercontraсts', raise_exception=True)
 def contract_users(request, contract_id):
-    """Добавление пользователя к договору"""
+    """Создание доступа пользователя к договору"""
+
     template = 'contracts/contract_users.html'
     form = UserContractsForm(request.POST or None,)
     context = {
             'title': title,
             'form': form,
+            'action': 'add',
         }
 
     if request.method == 'POST':
@@ -184,7 +265,8 @@ def contract_users(request, contract_id):
         if form.is_valid():
             contract = form.save(commit=False)
             contract.deal_id = contract_id
-            if UserContraсts.objects.filter(collaborator_id=contract.collaborator_id, deal_id=contract.deal_id).exists():
+            if UserContraсts.objects.filter(
+                collaborator_id=contract.collaborator_id, deal_id=contract.deal_id).exists():
                 template = 'contracts/contract_any.html'
                 annotation = 'Ошибка добавления пользователя'
                 text = 'Данный пользователь был добавлен ранее'
@@ -200,40 +282,37 @@ def contract_users(request, contract_id):
 
     return render(request, template, context)
 
+@permission_required('contracts.delete_usercontraсts', raise_exception=True)
+def contract_users_del(request, contract_id):
+    """Удаление доступа пользователя к договору"""
 
-# JsonAPI
+    template = 'contracts/contract_users.html'
+    form = UserContractsForm(request.POST or None,)
+    context = {
+            'title': title,
+            'form': form,
+            'action': 'del',
+        }
 
-@permission_required('contracts.view_contract', raise_exception=True)
-def list_curator_contracts(request, user_id):
-    """Показывает список договоров у куратора"""
-    list_contracts = list(Contract.objects.filter(curator_id=user_id).values(
-        "id", "name", "number", "start_date", "end_date"))
+    if request.method == 'POST':
 
-    return JsonResponse(
-        list_contracts, safe=False, json_dumps_params={'ensure_ascii': False})
+        if form.is_valid():
+            contract = form.save(commit=False)
+            contract.deal_id = contract_id
+            if UserContraсts.objects.filter(
+                collaborator_id=contract.collaborator_id, deal_id=contract.deal_id).exists():
+                UserContraсts.objects.filter(
+                    collaborator_id=contract.collaborator_id, deal_id=contract.deal_id).delete()
+                return redirect('contracts:contract_detail', contract_id=contract_id)
+            else:
+                template = 'contracts/contract_any.html'
+                annotation = 'Ошибка удаления прав пользователя'
+                text = 'Данный пользователь прав доступа к договору не имеет'
+                context = {
+                    'title': title,
+                    'annotation' : annotation,
+                    'text': text,
+                }
+                return render(request, template, context)
 
-
-@permission_required('contracts.view_contract', raise_exception=True)
-def list_contract_users(request, contract_id):
-    """Показывает список пользователей имеющих доступ к договору"""
-    contract_user_id_lst, list_users = [], []
-    user_id = request.user.id
-    user_group = request.user.groups.values_list('name', flat=True).first()
-    contracts_lst = list(UserContraсts.objects.filter(deal_id=contract_id).values(
-        "collaborator_id",))
-    for i in contracts_lst:
-        for j in i.items():
-            contract_user_id_lst.append(j[1])
-    contract_users = User.objects.filter(id__in=contract_user_id_lst)
-    
-    if user_group == 'admin_group' or user_id in contract_user_id_lst:
-        for i in contract_users:
-            context = {
-            'name': str(i),
-            'company' : str(get_object_or_404(Partner, pk=i.userprofile.company_id)),
-            'position': str(i.userprofile.position),
-            }
-            list_users.append(context)
-        return JsonResponse(list_users, safe=False, json_dumps_params={'ensure_ascii': False})
-    
-    return JsonResponse(['error'], safe=False, json_dumps_params={'ensure_ascii': False})
+    return render(request, template, context)

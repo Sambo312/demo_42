@@ -10,7 +10,11 @@
         <p><form method="post" enctype="multipart/form-data" action="">
               {% csrf_token %}
               <p>{{ form.collaborator }} Работник </p>
-              <p><button type="submit" class="btn btn-primary">Загрузить</button></p>
+              {% if action == 'add' %}
+                <p><button type="submit" class="btn btn-primary">Добавить</button></p>
+              {% elif action == 'del' %}
+                <p><button type="submit" class="btn btn-primary">Удалить</button></p>
+              {% endif %}
         </form></p>
       </div>
     </div>

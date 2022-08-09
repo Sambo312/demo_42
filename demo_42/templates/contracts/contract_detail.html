@@ -44,8 +44,12 @@
           {% endif %}
           {% if user_group == 'admin_group' %}
           <li>
-            <b>Добавление работников к договору:</b>
+            <b>Добавление прав доступа работников к договору:</b>
             <a href="{% url 'contracts:contract_users' contract.id %}">Добавить</a>
+          </li>
+          <li>
+            <b>Удаление прав доступа работников к договору:</b>
+            <a href="{% url 'contracts:contract_users_del' contract.id %}">Удалить</a>
           </li>
           {% endif %}
         </ul>
