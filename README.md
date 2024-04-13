@@ -9,6 +9,11 @@ Django 3.2
 ```
 pip install -r requirements.txt
 ``` 
+- Определите переменные окружения S_KEY и A_HOSTS например так:
+```
+S_KEY='хххх' 
+A_HOSTS='*'
+``` 
 - В каталоге с файлом manage.py выполните команду:
 ```
 python manage.py runserver
